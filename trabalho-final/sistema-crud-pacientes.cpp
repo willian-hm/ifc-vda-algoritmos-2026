@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
 #define MAX 100
 
+// Registro (struct) com as variáveis dos pacientes
 struct paciente
 {
     int codigo;
@@ -23,12 +23,15 @@ struct paciente p[MAX];
 int i;
 int proxCod = 1;
 
+// FUNÇÕES
 void cadastrar() {}
 void editar() {}
 void excluir() {}
 void consultar() {}
 void listar() {}
 
+
+// MENU
 main()
 {
     int op;
