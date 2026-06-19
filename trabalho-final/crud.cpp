@@ -1,13 +1,48 @@
 // Trabalho Final - CRUD de Pacientes
 
-// Perguntas pro professor:
-// O código começa por 1 ou 0? Que daí só usa o i daí
-// Pedir pro professor se os char precisa do & ou não no cadastrar() em array char
+// Sistema de cadastro e controle de Pacientes
+// Objetivo:
+// Você foi contratado pela clínica Saúde+ para desenvolver um sistema em C
+// para cadastro e gerenciamento de pacientes. O sistema deve seguir boas práticas
+// de programação e oferecer interface amigável com as validações de campo
+// necessárias.
+// Escopo do Sistema:
+// O sistema deve realizar o cadastro e o gerenciamento dos pacientes com os
+// seguintes atributos obrigatórios:
+//  Código do paciente (gerado automaticamente de forma sequencial);
+//  Nome completo;
+//  CPF;
+//  Data de nascimento;
+//  Sexo;
+//  Telefone;
+//  Endereço;
+//  Tipo sanguíneo;
+//  Convênio (ou Particular).
+// * Podem ser implementados outros atributos, caso julgue necessário.
+// Observações:
+//  O código do paciente deve ser gerado automaticamente seguindo a ordem
+// de inserção;
+//  Pacientes excluídos devem sofrer exclusão lógica (marcação de inativo) e
+// não reaparecer em listagens/consultas; códigos não devem ser reutilizados;
+//  O CPF deve possuir validação básica de formato (tamanho de caracteres);
+//  Nome, telefone e endereço não podem ficar vazios.
+// Funcionalidades obrigatórias:
+//  Cadastrar novo paciente;
+//  Editar dados de um paciente existente;
+//  Excluir um paciente (exclusão lógica);
+//  Consultar pacientes por:
+//  Código;
+//  Nome (busca por substring, case-insensitive);
+//  CPF;
+//  Listar todos os pacientes cadastrados (somente os ativos);
+//  Menu interativo na função main() para navegação entre funcionalidades.
+// * Funcionalidades extras são bem-vindas e serão consideradas como diferencial.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #define MAX 100
 
 // Registro (struct) com as variáveis dos pacientes
@@ -32,6 +67,8 @@ int j = 0;
 int proxCod = 3; // Próximo código a ser atribuído ao próximo paciente cadastrado
 
 // FUNÇÕES
+
+// Função para cadastrar pacientes iniciais
 void pacientesIniciais()
 {
     p[0].codigo = 1;
@@ -57,10 +94,11 @@ void pacientesIniciais()
     p[1].ativo = true;
 }
 
+// Função para cadastrar um novo paciente
 void cadastrar()
 {
     printf("Digite o nome do paciente: ");
-    scanf(" %[^\n]", &p[i].nome);
+    scanf(" %[^\n]s", &p[i].nome);
     printf("Digite o CPF do paciente: ");
     scanf("%s", &p[i].cpf);
     printf("Digite a data de nascimento do paciente (dd/mm/aaaa): ");
@@ -68,13 +106,13 @@ void cadastrar()
     printf("Digite o sexo do paciente (M/F): ");
     scanf("%s", &p[i].sexo);
     printf("Digite o telefone do paciente: ");
-    scanf(" %[^\n]", &p[i].telefone);
+    scanf(" %[^\n]s", &p[i].telefone);
     printf("Digite o endereco do paciente: ");
-    scanf(" %[^\n]", &p[i].endereco);
+    scanf(" %[^\n]s", &p[i].endereco);
     printf("Digite o tipo sanguineo do paciente: ");
     scanf("%s", &p[i].tipoSanguineo);
     printf("Digite o convenio do paciente: ");
-    scanf(" %[^\n]", &p[i].convenio);
+    scanf(" %[^\n]s", &p[i].convenio);
 
     printf("\nPaciente cadastrado com sucesso!\n");
     printf("Codigo gerado: %i\n", proxCod);
@@ -86,101 +124,173 @@ void cadastrar()
     i++;
 
     system("pause");
-
 }
+
+// Função para exibir os dados de um paciente a partir do indice do paciente encontrado na função de busca
+void buscaPorCodigo(int codigo)
+{
+    if (p[codigo].codigo != 0 && p[codigo].ativo)
+    {
+        printf("Codigo: %i\n", p[codigo].codigo);
+        printf("Nome: %s\n", p[codigo].nome);
+        printf("CPF: %s\n", p[codigo].cpf);
+        printf("Nascimento: %s\n", p[codigo].nascimento);
+        printf("Sexo: %s\n", p[codigo].sexo);
+        printf("Telefone: %s\n", p[codigo].telefone);
+        printf("Endereco: %s\n", p[codigo].endereco);
+        printf("Tipo Sanguineo: %s\n", p[codigo].tipoSanguineo);
+        printf("Convenio: %s\n", p[codigo].convenio);
+    }
+    else
+    {
+        printf("Paciente nao encontrado.\n");
+    }
+
+    system("pause");
+}
+
+// Converte char pra minúsculo
+void minusculo(char nome[])
+{
+    for (int j = 0; j < strlen(nome); j++)
+    {
+        nome[j] = tolower(nome[j]);
+    }
+}
+
+// Função para buscar um paciente por código, nome ou CPF e retornar o índice do paciente encontrado
+int busca()
+{
+    int op;
+    int codigo;
+
+    printf("=======PAINEL DE BUSCA=======\n");
+    printf("Digite:\n");
+    printf("1 - Buscar por codigo\n");
+    printf("2 - Buscar por Nome\n");
+    printf("3 - Buscar por CPF\n");
+    printf("==============================\n");
+    scanf("%i", &op);
+    printf("\n");
+
+    if (op == 1)
+    {
+        // Busca por codigo
+        printf("Digite o codigo do paciente a ser consultado: ");
+        scanf("%i", &codigo);
+    }
+    else if (op == 2)
+    {
+        // Busca por Nome
+        char nome[100];
+        printf("Digite o nome do paciente a ser consultado: ");
+        scanf(" %[^\n]", nome);
+
+        minusculo(nome);
+
+        for (j = 0; j < i; j++)
+        {
+            char nomePaciente[100];
+            strcpy(nomePaciente, p[j].nome);
+
+            minusculo(nomePaciente);
+
+            if (strstr(nomePaciente, nome) != 0 && p[j].ativo)
+            {
+                codigo = p[j].codigo;
+                break;
+            }
+        }
+    }
+    else if (op == 3)
+    {
+        // Busca por CPF
+        char cpf[20];
+        printf("Digite o cpf do paciente a ser consultado: ");
+        scanf(" %[^\n]s", &cpf);
+        for (j = 0; j < i; j++)
+        {
+            if (strcmp(p[j].cpf, cpf) == 0 && p[j].ativo)
+            {
+                codigo = p[j].codigo;
+                break;
+            }
+        }
+    }
+    else
+    {
+        // retorna 0
+        codigo = 0;
+    }
+
+    if (j == i)
+    {
+        printf("Paciente nao encontrado.\n");
+    }
+
+    return j;
+}
+
+// Função para editar um paciente existente
 void editar()
 {
-    int cod;
-    printf("Digite o codigo do paciente a ser editado: ");
-    scanf("%i", &cod);
-
-    for (j = 0; j < i; j++)
+    busca();
+    if (p[j].codigo != 0 && p[j].ativo)
     {
-        if (p[j].codigo == cod && p[j].ativo)
-        {
-            printf("Digite o novo nome do paciente: ");
-            scanf(" %[^\n]", &p[j].nome);
-            printf("Digite o novo CPF do paciente: ");
-            scanf("%s", &p[j].cpf);
-            printf("Digite a nova data de nascimento do paciente (dd/mm/aaaa): ");
-            scanf("%s", &p[j].nascimento);
-            printf("Digite o novo sexo do paciente (M/F): ");
-            scanf("%s", &p[j].sexo);
-            printf("Digite o novo telefone do paciente: ");
-            scanf(" %[^\n]", &p[j].telefone);
-            printf("Digite o novo endereco do paciente: ");
-            scanf(" %[^\n]", &p[j].endereco);
-            printf("Digite o novo tipo sanguineo do paciente: ");
-            scanf("%s", &p[j].tipoSanguineo);
-            printf("Digite o novo convenio do paciente: ");
-            scanf(" %[^\n]", &p[j].convenio);
-            break;
-        }
+        printf("Digite o novo nome do paciente: ");
+        scanf(" %[^\n]s", &p[j].nome);
+        printf("Digite o novo CPF do paciente: ");
+        scanf("%s", &p[j].cpf);
+        printf("Digite a nova data de nascimento do paciente (dd/mm/aaaa): ");
+        scanf("%s", &p[j].nascimento);
+        printf("Digite o novo sexo do paciente (M/F): ");
+        scanf("%s", &p[j].sexo);
+        printf("Digite o novo telefone do paciente: ");
+        scanf(" %[^\n]s", &p[j].telefone);
+        printf("Digite o novo endereco do paciente: ");
+        scanf(" %[^\n]s", &p[j].endereco);
+        printf("Digite o novo tipo sanguineo do paciente: ");
+        scanf("%s", &p[j].tipoSanguineo);
+        printf("Digite o novo convenio do paciente: ");
+        scanf(" %[^\n]s", &p[j].convenio);
     }
-
-    if (j == i)
+    else
     {
-        printf("Paciente com codigo %i nao encontrado.\n", cod);
+        printf("Paciente nao encontrado.\n");
     }
 
     system("pause");
-
 }
+//  Função para excluir um paciente (marcar como inativo)
 void excluir()
 {
-    int cod;
-    printf("Digite o codigo do paciente a ser excluido: ");
-    scanf("%i", &cod);
+    busca();
 
-    for (j = 0; j < i; j++)
+    if (p[j].codigo != 0 && p[j].ativo)
     {
-        if (p[j].codigo == cod && p[j].ativo)
-        {
-            p[j].ativo = false;
-            printf("Paciente com codigo %i excluido.\n", cod);
-            break;
-        }
+        p[j].ativo = false;
+        printf("Paciente com codigo %i excluido.\n", p[j].codigo);
     }
-
-    if (j == i)
+    else
     {
-        printf("Paciente com codigo %i nao encontrado.\n", cod);
+        printf("Paciente com codigo %i nao encontrado.\n", p[j].codigo);
     }
 
     system("pause");
-
 }
+
+// Função para consultar um paciente (buscar e exibir os dados)
+
 void consultar()
 {
-    int cod;
-    printf("Digite o codigo do paciente a ser consultado: ");
-    scanf("%i", &cod);
-
-    for (j = 0; j < i; j++)
+    busca();
+    if (j != i)
     {
-        if (p[j].codigo == cod && p[j].ativo)
-        {
-            printf("Codigo: %i\n", p[j].codigo);
-            printf("Nome: %s\n", p[j].nome);
-            printf("CPF: %s\n", p[j].cpf);
-            printf("Nascimento: %s\n", p[j].nascimento);
-            printf("Sexo: %s\n", p[j].sexo);
-            printf("Telefone: %s\n", p[j].telefone);
-            printf("Endereco: %s\n", p[j].endereco);
-            printf("Tipo Sanguineo: %s\n", p[j].tipoSanguineo);
-            printf("Convenio: %s\n", p[j].convenio);
-            break;
-        }
+        buscaPorCodigo(j);
     }
-
-    if (j == i)
-    {
-        printf("Paciente com codigo %i nao encontrado.\n", cod);
-    }
-
-    system("pause");
-
 }
+
+// Função para listar todos os pacientes ativos
 void listar()
 {
     for (int j = 0; j < i; j++)
@@ -258,7 +368,7 @@ main()
         }
         default:
         {
-            printf("Opção inválida\n");
+            printf("Opcao invalida\n");
             break;
         }
         }
