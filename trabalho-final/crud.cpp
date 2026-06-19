@@ -378,6 +378,7 @@ void editar()
 
     system("pause");
 }
+
 //  Função para excluir um paciente (marcar como inativo)
 void excluir()
 {
