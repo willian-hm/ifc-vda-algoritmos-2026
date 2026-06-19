@@ -97,22 +97,131 @@ void pacientesIniciais()
 // Função para cadastrar um novo paciente
 void cadastrar()
 {
+
     printf("Digite o nome do paciente: ");
     scanf(" %[^\n]s", &p[i].nome);
+    for (;;)
+    {
+        if (strlen(p[i].nome) == 0)
+        {
+            printf("O nome nao pode ficar vazio. Digite novamente: ");
+            scanf(" %[^\n]s", &p[i].nome);
+        }
+        else
+        {
+            break;
+        }
+    }
     printf("Digite o CPF do paciente: ");
     scanf("%s", &p[i].cpf);
+    for (;;)
+    {
+        if (strlen(p[i].cpf) == 0)
+        {
+            printf("O CPF nao pode ficar vazio. Digite novamente: ");
+            scanf("%s", &p[i].cpf);
+        }
+        else if (strlen(p[i].cpf) != 14)
+        {
+            printf("O CPF deve conter 14 caracteres (formato xxx.xxx.xxx-xx). Digite novamente: ");
+            scanf("%s", &p[i].cpf);
+        }
+        else
+        {
+            break;
+        }
+    }
     printf("Digite a data de nascimento do paciente (dd/mm/aaaa): ");
     scanf("%s", &p[i].nascimento);
+    for (;;)
+    {
+        if (strlen(p[i].nascimento) == 0)
+        {
+            printf("A data de nascimento nao pode ficar vazia. Digite novamente (dd/mm/aaaa): ");
+            scanf("%s", &p[i].nascimento);
+        }
+        else
+        {
+            break;
+        }
+    }
     printf("Digite o sexo do paciente (M/F): ");
-    scanf("%s", &p[i].sexo);
+    scanf("%s", p[i].sexo);
+
+    for (;;)
+    {
+        if (strlen(p[i].sexo) == 0)
+        {
+            printf("O sexo nao pode ficar vazio. Digite novamente (M/F): ");
+            scanf("%s", p[i].sexo);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     printf("Digite o telefone do paciente: ");
     scanf(" %[^\n]s", &p[i].telefone);
+
+    for (;;)
+    {
+        if (strlen(p[i].telefone) == 0)
+        {
+            printf("O telefone nao pode ficar vazio. Digite novamente: ");
+            scanf(" %[^\n]s", &p[i].telefone);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     printf("Digite o endereco do paciente: ");
     scanf(" %[^\n]s", &p[i].endereco);
+
+    for (;;)
+    {
+        if (strlen(p[i].endereco) == 0)
+        {
+            printf("O endereco nao pode ficar vazio. Digite novamente: ");
+            scanf(" %[^\n]s", &p[i].endereco);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     printf("Digite o tipo sanguineo do paciente: ");
     scanf("%s", &p[i].tipoSanguineo);
+    for (;;)
+    {
+        if (strlen(p[i].tipoSanguineo) == 0)
+        {
+            printf("O tipo sanguineo nao pode ficar vazio. Digite novamente: ");
+            scanf("%s", &p[i].tipoSanguineo);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     printf("Digite o convenio do paciente: ");
     scanf(" %[^\n]s", &p[i].convenio);
+    for (;;)
+    {
+        if (strlen(p[i].convenio) == 0)
+        {
+            printf("O convenio nao pode ficar vazio. Digite novamente: ");
+            scanf(" %[^\n]s", &p[i].convenio);
+        }
+        else
+        {
+            break;
+        }
+    }
 
     printf("\nPaciente cadastrado com sucesso!\n");
     printf("Codigo gerado: %i\n", proxCod);
@@ -178,6 +287,14 @@ int busca()
         // Busca por codigo
         printf("Digite o codigo do paciente a ser consultado: ");
         scanf("%i", &codigo);
+
+        for (j = 0; j < i; j++)
+        {
+            if (p[j].codigo == codigo && p[j].ativo)
+            {
+                break;
+            }
+        }
     }
     else if (op == 2)
     {
@@ -207,7 +324,7 @@ int busca()
         // Busca por CPF
         char cpf[20];
         printf("Digite o cpf do paciente a ser consultado: ");
-        scanf(" %[^\n]s", &cpf);
+        scanf(" %s", &cpf);
         for (j = 0; j < i; j++)
         {
             if (strcmp(p[j].cpf, cpf) == 0 && p[j].ativo)
@@ -235,7 +352,7 @@ int busca()
 void editar()
 {
     busca();
-    if (p[j].codigo != 0 && p[j].ativo)
+    if (j < i && p[j].ativo)
     {
         printf("Digite o novo nome do paciente: ");
         scanf(" %[^\n]s", &p[j].nome);
@@ -266,7 +383,7 @@ void excluir()
 {
     busca();
 
-    if (p[j].codigo != 0 && p[j].ativo)
+    if (j < i && p[j].ativo)
     {
         p[j].ativo = false;
         printf("Paciente com codigo %i excluido.\n", p[j].codigo);
